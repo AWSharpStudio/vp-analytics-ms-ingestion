@@ -1,0 +1,10 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: vp-analytics-ms-ingestion
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
