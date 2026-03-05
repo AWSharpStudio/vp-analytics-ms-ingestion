@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public record Transaction(
         LocalDate date,
-        TransactionType transactionType,
+        ETransactionType transactionType,
         ETransactionTypeCategory expenseCategory,
         String description,
         String customerId,

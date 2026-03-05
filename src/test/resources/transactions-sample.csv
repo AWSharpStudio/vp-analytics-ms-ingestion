@@ -1,0 +1,3 @@
+date;transactionType;expenseCategory;description;customerId;isNewCustomer;firstPurchaseDate;value
+15/01/2025;REVENUE;PAID_TRAFFIC;Google Ads campaign;CLI-001;TRUE;15/01/2025;4.500,00
+20/01/2025;EXPENSE;TAXES;Simples Nacional;CLI-002;FALSE;;1.200,50

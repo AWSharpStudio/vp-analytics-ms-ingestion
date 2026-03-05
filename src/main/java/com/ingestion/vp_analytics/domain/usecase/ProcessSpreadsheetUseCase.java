@@ -1,7 +1,7 @@
 package com.ingestion.vp_analytics.domain.usecase;
 
 import com.ingestion.vp_analytics.domain.exception.DuplicateFileException;
-import com.ingestion.vp_analytics.domain.exception.ProccessSpreadSheetException;
+import com.ingestion.vp_analytics.domain.exception.ProcessSpreadSheetException;
 import com.ingestion.vp_analytics.domain.model.SpreadsheetUpload;
 import com.ingestion.vp_analytics.domain.model.Transaction;
 import com.ingestion.vp_analytics.domain.model.UploadStatus;
@@ -57,7 +57,7 @@ public class ProcessSpreadsheetUseCase implements ProcessSpreadsheetInputPort {
             publisher.publish(upload.id(), transactions);
         } catch (Exception e) {
             repository.updateUploadStatus(upload.id(), UploadStatus.FAILED);
-            throw new ProccessSpreadSheetException("Failed to process spreadsheet: " + e.getMessage());
+            throw new ProcessSpreadSheetException("Failed to process spreadsheet: " + e.getMessage());
         }
     }
 
@@ -66,7 +66,7 @@ public class ProcessSpreadsheetUseCase implements ProcessSpreadsheetInputPort {
             return file.getBytes();
         } catch (IOException e) {
             log.error("Failed to read bytes from file={}", file.getOriginalFilename(), e);
-            throw new ProccessSpreadSheetException("Could not read file bytes.");
+            throw new ProcessSpreadSheetException("Could not read file bytes.");
         }
     }
 
@@ -74,7 +74,7 @@ public class ProcessSpreadsheetUseCase implements ProcessSpreadsheetInputPort {
         try {
             return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(fileBytes));
         } catch (NoSuchAlgorithmException e) {
-            throw new ProccessSpreadSheetException("SHA-256 not available.");
+            throw new ProcessSpreadSheetException("SHA-256 not available.");
         }
     }
 }
