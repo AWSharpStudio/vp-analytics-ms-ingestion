@@ -46,7 +46,7 @@ class ProcessSpreadsheetUseCaseTest {
     public static final String UPLOAD_ID = "id-123";
     public static final List<Transaction> TRANSACTIONS = List.of(
             new Transaction(LocalDate.of(2025, 1, 15), ETransactionType.REVENUE,
-                    ETransactionTypeCategory.PAID_TRAFFIC, "Google Ads", "CLI-001",
+                    null, ERevenueCategories.REFERRAL, "Google Ads", "CLI-001",
                     true, LocalDate.of(2025, 1, 15), new BigDecimal("4500.00"))
     );
 
@@ -155,7 +155,7 @@ class ProcessSpreadsheetUseCaseTest {
             RuntimeException exception = assertThrows(RuntimeException.class, () ->
                     useCase.execute(file));
 
-            assertEquals("SHA-256 not available. ", exception.getMessage());
+            assertEquals("SHA-256 not available.", exception.getMessage());
         }
     }
 }

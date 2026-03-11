@@ -1,7 +1,8 @@
 package com.ingestion.vp_analytics.adapters.output.file;
 
+import com.ingestion.vp_analytics.domain.model.EExpenseCategories;
+import com.ingestion.vp_analytics.domain.model.ERevenueCategories;
 import com.ingestion.vp_analytics.domain.model.ETransactionType;
-import com.ingestion.vp_analytics.domain.model.ETransactionTypeCategory;
 import com.ingestion.vp_analytics.domain.model.Transaction;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +14,12 @@ import java.time.format.DateTimeFormatter;
 //0 = date (dd/MM/yyyy)
 //1 = transactionType
 //2 = expenseCategory
-//3 = description
-//4 = customerId
-//5 = isNewCustomer
-//6 = firstPurchaseDate (may be empty, dd/MM/yyyy)
-//7 = value (Brazilian decimal format)
+//3 = revenueCategory
+//4 = description
+//5 = customerId
+//6 = isNewCustomer
+//7 = firstPurchaseDate (may be empty, dd/MM/yyyy)
+//8 = value (Brazilian decimal format)
 
 @Component
 public class CsvTransactionMapper {
@@ -26,16 +28,17 @@ public class CsvTransactionMapper {
 
     public Transaction map(String[] row) {
         LocalDate firstPurchase = null;
-        if (!row[6].trim().isEmpty()) {
-            firstPurchase = LocalDate.parse(row[6].trim(), DATE_FORMAT);
+        if (!row[7].trim().isEmpty()) {
+            firstPurchase = LocalDate.parse(row[7].trim(), DATE_FORMAT);
         }
         return new Transaction(LocalDate.parse(row[0].trim(), DATE_FORMAT),
-                ETransactionType.valueOf(row[1].trim().toUpperCase()),
-                ETransactionTypeCategory.valueOf(row[2].trim().toUpperCase()),
-                row[3].trim(),
+                ETransactionType.labelOf(row[1].trim()),
+                EExpenseCategories.labelOf(row[2].trim()),
+                ERevenueCategories.labelOf(row[3].trim()),
                 row[4].trim(),
-                Boolean.parseBoolean(row[5].trim()),
+                row[5].trim(),
+                Boolean.parseBoolean(row[6].trim()),
                 firstPurchase,
-                new BigDecimal(row[7].trim().replace(".", "").replace(",", ".")));
+                new BigDecimal(row[8].trim().replace(".", "").replace(",", ".")));
     }
 }

@@ -6,10 +6,11 @@ import java.time.LocalDate;
 public record Transaction(
         LocalDate date,
         ETransactionType transactionType,
-        ETransactionTypeCategory expenseCategory,
+        EExpenseCategories expenseCategory,
+        ERevenueCategories revenueCategory,
         String description,
         String customerId,
-        boolean isNewCostumer,
+        boolean isNewCustomer,
         LocalDate firstPurchaseDate,
         BigDecimal value
 ) {

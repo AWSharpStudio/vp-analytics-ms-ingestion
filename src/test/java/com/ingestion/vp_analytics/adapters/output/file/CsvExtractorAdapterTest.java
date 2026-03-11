@@ -1,8 +1,9 @@
 package com.ingestion.vp_analytics.adapters.output.file;
 
 import com.ingestion.vp_analytics.domain.exception.ProcessSpreadSheetException;
+import com.ingestion.vp_analytics.domain.model.EExpenseCategories;
+import com.ingestion.vp_analytics.domain.model.ERevenueCategories;
 import com.ingestion.vp_analytics.domain.model.ETransactionType;
-import com.ingestion.vp_analytics.domain.model.ETransactionTypeCategory;
 import com.ingestion.vp_analytics.domain.model.Transaction;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
@@ -34,21 +35,30 @@ class CsvExtractorAdapterTest {
     @Test
     void shouldParseAllValidRows() {
         List<Transaction> result = csvExtractor.extract(csv("transactions-sample.csv"));
+        Transaction firstRow = result.getFirst();
+        Transaction secondRow = result.get(1);
+
         assertEquals(2, result.size());
-    }
 
-    @Test
-    void shouldCorrectlyMapFirstRowWithoutHeader() {
-        Transaction firstRow = csvExtractor.extract(csv("transactions-sample.csv")).getFirst();
-        assertEquals(firstRow.date(), LocalDate.of(2025, 1, 15));
-
+        assertEquals(LocalDate.of(2025, 1, 15), firstRow.date());
         assertEquals(ETransactionType.REVENUE, firstRow.transactionType());
-        assertEquals(ETransactionTypeCategory.PAID_TRAFFIC, firstRow.expenseCategory());
+        assertEquals(EExpenseCategories.NOT_CATEGORIZED, firstRow.expenseCategory());
+        assertEquals(ERevenueCategories.REFERRAL, firstRow.revenueCategory());
         assertEquals("Google Ads campaign", firstRow.description());
         assertEquals("CLI-001", firstRow.customerId());
-        assertTrue(firstRow.isNewCostumer());
+        assertTrue(firstRow.isNewCustomer());
         assertEquals(LocalDate.of(2025, 1, 15), firstRow.firstPurchaseDate());
         assertEquals(new BigDecimal("4500.00"), firstRow.value());
+
+        assertEquals(LocalDate.of(2025, 1, 20), secondRow.date());
+        assertEquals(ETransactionType.EXPENSE, secondRow.transactionType());
+        assertEquals(EExpenseCategories.TAXES, secondRow.expenseCategory());
+        assertEquals(ERevenueCategories.NOT_CATEGORIZED, secondRow.revenueCategory());
+        assertEquals("Simples Nacional", secondRow.description());
+        assertEquals("", secondRow.customerId());
+        assertFalse(secondRow.isNewCustomer());
+        assertNull(secondRow.firstPurchaseDate());
+        assertEquals(new BigDecimal("1200.50"), secondRow.value());
     }
 
     @Test
@@ -56,7 +66,7 @@ class CsvExtractorAdapterTest {
         Transaction secondRow = csvExtractor.extract(csv("transactions-sample.csv")).get(1);
 
         assertEquals(ETransactionType.EXPENSE, secondRow.transactionType());
-        assertFalse(secondRow.isNewCostumer());
+        assertFalse(secondRow.isNewCustomer());
         assertNull(secondRow.firstPurchaseDate());
         assertEquals(new BigDecimal("1200.50"), secondRow.value());
     }

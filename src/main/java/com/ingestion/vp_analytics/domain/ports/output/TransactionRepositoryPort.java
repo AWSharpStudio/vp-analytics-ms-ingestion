@@ -9,9 +9,9 @@ import java.util.List;
 public interface TransactionRepositoryPort {
     boolean existsByFileHash(String fileHash);
 
-    SpreadsheetUpload saveUpload(Object any);
+    SpreadsheetUpload saveUpload(SpreadsheetUpload any);
 
-    SpreadsheetUpload updateUploadStatus(String fileId, UploadStatus status);
+    SpreadsheetUpload updateUploadStatus(String uploadId, UploadStatus status);
 
     void saveTransactions(List<Transaction> transactions, String fileId);
 }
