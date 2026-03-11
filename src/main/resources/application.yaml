@@ -8,15 +8,10 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-  datasource:
-    url: jdbc:postgresql://localhost:5432/vp_avalytics-db
-    username: vp_analytics-db-admin
-    password: vpa-strong-password-123
-    driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:
+  show-sql: false
+  hibernate:
       ddl-auto: update
-      show-sql: false
       properties:
         hibernate:
           dialect: org.hibernate.dialect.PostgreSQLDialect
