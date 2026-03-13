@@ -6,3 +6,11 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: update
+  kafka:
+    producer:
+      properties:
+        max.block.ms: 5000
+        request.timeout.ms: 3000
+        delivery.timeout.ms: 10000
