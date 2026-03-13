@@ -1,0 +1,64 @@
+{
+  "info": {
+    "_postman_id": "f2684546-25de-4f87-8667-905d40de42cc",
+    "name": "Venda Planejada Analytics",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "17646551"
+  },
+  "item": [
+    {
+      "name": "vp-analytics-ms-ingestion",
+      "item": [
+        {
+          "name": "Ingest Spreadsheet",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "uuid": "cd6c2ee8-1d27-4b05-bd45-acd4f0e1c776",
+                  "src": "postman-cloud:///1f11e676-a3dd-4d20-833f-21fd928d9e90"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/ingestion/spreadsheet",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "ingestion",
+                "spreadsheet"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "actuator",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
