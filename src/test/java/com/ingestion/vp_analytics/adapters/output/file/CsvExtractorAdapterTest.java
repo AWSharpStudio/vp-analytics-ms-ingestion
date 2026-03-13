@@ -34,7 +34,8 @@ class CsvExtractorAdapterTest {
 
     @Test
     void shouldParseAllValidRows() {
-        List<Transaction> result = csvExtractor.extract(csv("transactions-sample.csv"));
+        String fileName = "transactions-sample.csv";
+        List<Transaction> result = csvExtractor.extract(csv(fileName), fileName);
         Transaction firstRow = result.getFirst();
         Transaction secondRow = result.get(1);
 
@@ -63,7 +64,8 @@ class CsvExtractorAdapterTest {
 
     @Test
     void shouldHandleEmptyFirstPurchaseDate() {
-        Transaction secondRow = csvExtractor.extract(csv("transactions-sample.csv")).get(1);
+        String fileName = "transactions-sample.csv";
+        Transaction secondRow = csvExtractor.extract(csv(fileName), fileName).get(1);
 
         assertEquals(ETransactionType.EXPENSE, secondRow.transactionType());
         assertFalse(secondRow.isNewCustomer());
@@ -74,13 +76,14 @@ class CsvExtractorAdapterTest {
     @Test
     void shouldReturnEmptyListForMalformedRows() {
         byte[] malformed = (CSV_HEADER + "not;enough;columns also;bad").getBytes();
-        List<Transaction> result = csvExtractor.extract(new ByteArrayInputStream(malformed));
+        List<Transaction> result = csvExtractor.extract(new ByteArrayInputStream(malformed), "");
         assertTrue(result.isEmpty());
     }
 
     @Test
     void shouldReturnShorterListRow7Columns() {
-        List<Transaction> result = csvExtractor.extract(csv("transactions-sample-short-row.csv"));
+        String fileName = "transactions-sample-short-row.csv";
+        List<Transaction> result = csvExtractor.extract(csv(fileName), fileName);
         assertEquals(1, result.size());
     }
 
@@ -90,7 +93,8 @@ class CsvExtractorAdapterTest {
         when(csvReader.readAll()).thenThrow(ProcessSpreadSheetException.class);
 
         try {
-            csvExtractor.extract(csv("transactions-sample-comma-separator.csv"));
+            String fileName = "transactions-sample-comma-separator.csv";
+            csvExtractor.extract(csv(fileName), fileName);
             fail();
         } catch (ProcessSpreadSheetException e) {
             assertEquals("Failed to parse CSV: Text '15/0415/2025' could not be parsed at index 5", e.getMessage());

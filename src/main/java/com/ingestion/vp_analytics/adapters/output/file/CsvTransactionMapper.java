@@ -39,6 +39,6 @@ public class CsvTransactionMapper {
                 row[5].trim(),
                 Boolean.parseBoolean(row[6].trim()),
                 firstPurchase,
-                new BigDecimal(row[8].trim().replace(".", "").replace(",", ".")));
+                new BigDecimal(row[8].trim().replace(",", "")));
     }
 }

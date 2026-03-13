@@ -51,7 +51,7 @@ public class ProcessSpreadsheetUseCase implements ProcessSpreadsheetInputPort {
         try {
             repository.updateUploadStatus(upload.id(), UploadStatus.PROCESSING);
 
-            List<Transaction> transactions = extractor.extract(new ByteArrayInputStream(fileBytes));
+            List<Transaction> transactions = extractor.extract(new ByteArrayInputStream(fileBytes), file.getName());
             repository.saveTransactions(transactions, upload.id());
             repository.updateUploadStatus(upload.id(), UploadStatus.SUCCESS);
             publisher.publish(upload.id(), transactions);

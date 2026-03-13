@@ -64,7 +64,7 @@ class ProcessSpreadsheetUseCaseTest {
 
         when(repository.existsByFileHash(anyString())).thenReturn(false);
         when(repository.saveUpload(any())).thenReturn(fileSaved);
-        when(extractor.extract(any())).thenReturn(TRANSACTIONS);
+        when(extractor.extract(any(), anyString())).thenReturn(TRANSACTIONS);
 
         useCase.execute(file);
 
@@ -87,7 +87,7 @@ class ProcessSpreadsheetUseCaseTest {
         assertThrows(DuplicateFileException.class, () -> useCase.execute(file));
 
         verify(repository, never()).saveUpload(any());
-        verify(extractor, never()).extract(any());
+        verify(extractor, never()).extract(any(), anyString());
         verify(publisher, never()).publish(any(), any());
     }
 
@@ -100,7 +100,7 @@ class ProcessSpreadsheetUseCaseTest {
         when(repository.existsByFileHash(anyString())).thenReturn(false);
         when(repository.saveUpload(any())).thenReturn(fileSaved);
         when(repository.updateUploadStatus(anyString(), any(UploadStatus.class))).thenReturn(fileSaved);
-        when(extractor.extract(any())).thenThrow(new RuntimeException("Malformed CSV")); //
+        when(extractor.extract(any(), anyString())).thenThrow(new RuntimeException("Malformed CSV")); //
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> useCase.execute(file));
 
@@ -119,7 +119,7 @@ class ProcessSpreadsheetUseCaseTest {
         when(repository.existsByFileHash(anyString())).thenReturn(false);
         when(repository.saveUpload(any())).thenReturn(fileSaved);
         when(repository.updateUploadStatus(anyString(), any(UploadStatus.class))).thenReturn(fileSaved);
-        when(extractor.extract(any())).thenReturn(TRANSACTIONS);
+        when(extractor.extract(any(), anyString())).thenReturn(TRANSACTIONS);
         doThrow(new RuntimeException("Db error")).when(repository).saveTransactions(TRANSACTIONS, UPLOAD_ID); //
 
         assertThrows(RuntimeException.class, () -> useCase.execute(file));
@@ -139,7 +139,7 @@ class ProcessSpreadsheetUseCaseTest {
 
         assertEquals("Could not read file bytes.", exception.getMessage());
         verify(repository, never()).saveUpload(any());
-        verify(extractor, never()).extract(any());
+        verify(extractor, never()).extract(any(), anyString());
         verify(publisher, never()).publish(any(), any());
     }
 

@@ -23,20 +23,38 @@ public class CsvExtractorAdapter implements SpreadsheetExtractorPort {
     }
 
     @Override
-    public List<Transaction> extract(InputStream inputStream) {
+    public List<Transaction> extract(InputStream inputStream, String fileName) {
         try {
+            char separator = resolveSeparator(fileName);
+
             CSVReader reader = new CSVReaderBuilder(
                     new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-                    .withCSVParser(new CSVParserBuilder().withSeparator(';').build())
+                    .withCSVParser(new CSVParserBuilder().withSeparator(separator).build())
                     .withSkipLines(1)
                     .build();
 
             return reader.readAll().stream()
                     .filter(row -> row.length >= 8)
+                    .filter(row -> !isBlankRow(row))
                     .map(mapper::map)
                     .toList();
         } catch (Exception e) {
             throw new ProcessSpreadSheetException("Failed to parse CSV: " + e.getMessage());
         }
+    }
+
+    private char resolveSeparator(String fileName) {
+        if (fileName == null) return ',';
+        String lower = fileName.toLowerCase();
+        if (lower.endsWith(".tsv")) return '\t';
+        if (lower.endsWith(".csv")) return ',';
+        return ',';
+    }
+
+    private boolean isBlankRow(String[] row) {
+        for (String cell : row) {
+            if (cell != null && !cell.trim().isEmpty()) return false;
+        }
+        return true;
     }
 }

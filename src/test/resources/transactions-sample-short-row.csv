@@ -1,3 +1,3 @@
-date;transactionType;expenseCategory;revenueCategory;description;customerId;isNewCustomer;firstPurchaseDate;value
-15/01/2025;Receita;null;Parcela;Google Ads campaign;CLI-001;TRUE;15/01/2025;4.500,00;
-20/01/2025;Despesa;Impostos;null;Simples Nacional;1.200,50;
+date,transactionType,expenseCategory,revenueCategory,description,customerId,isNewCustomer,firstPurchaseDate,value
+15/01/2025,Receita,null,Parcela,Google Ads campaign,CLI-001,TRUE,15/01/2025,"4.500,00"
+20/01/2025,Despesa,Impostos,null,Simples Nacional,"1.200,50"

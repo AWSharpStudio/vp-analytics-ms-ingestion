@@ -46,7 +46,7 @@ public class JpaTransactionRepositoryAdapter implements TransactionRepositoryPor
     @Override
     public void saveTransactions(List<Transaction> transactions, String uploadId) {
         List<TransactionEntity> entities = transactions.stream()
-                .map(t -> new TransactionEntity("", uploadId, t.date(), t.transactionType(),
+                .map(t -> new TransactionEntity(uploadId, t.date(), t.transactionType(),
                         t.expenseCategory(), t.revenueCategory(), t.description(),
                         t.isNewCustomer(), t.firstPurchaseDate(), t.value()))
                 .toList();
