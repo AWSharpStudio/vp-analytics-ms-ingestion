@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ingestion</groupId>
-	<artifactId>vp-analytics</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>vp-analytics</name>
+	<artifactId>vp-analytics-ms-ingestion</artifactId>
+	<version>1.0.0</version>
+	<name>vp-analytics-ms-ingestion</name>
 	<description>Microsservice with the purpose of analysing sheets data and extract the company indicators</description>
 	<url/>
 	<licenses>
