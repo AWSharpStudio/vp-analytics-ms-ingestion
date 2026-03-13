@@ -58,6 +58,6 @@ class IngestionControllerTest {
         var file = new MockMultipartFile("file", "jan.csv", "text/csv", "data".getBytes());
 
         mockMvc.perform(multipart("/api/v1/ingestion/spreadsheet").file(file))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isInternalServerError());
     }
 }

@@ -3,7 +3,14 @@ package com.ingestion.vp_analytics.adapters.output.persistence.entity;
 import com.ingestion.vp_analytics.domain.model.EExpenseCategories;
 import com.ingestion.vp_analytics.domain.model.ERevenueCategories;
 import com.ingestion.vp_analytics.domain.model.ETransactionType;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
