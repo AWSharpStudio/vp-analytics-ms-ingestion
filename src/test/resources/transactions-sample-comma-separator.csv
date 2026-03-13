@@ -1,2 +1,2 @@
 date,transactionType,expenseCategory,revenueCategory,description,customerId,isNewCustomer,firstPurchaseDate,value
-15/0415/2025,Receita,null,Parcela,Google Ads campaign,CLI-001,TRUE,15/01/2025,"4.500,00"
+15/0415/2025,Receita,null,Parcela,Google Ads campaign,CLI-001,TRUE,15/01/2025,"4,500.00"

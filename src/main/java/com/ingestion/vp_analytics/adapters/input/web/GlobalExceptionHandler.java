@@ -17,25 +17,27 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateFileException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, Object> handleDuplicate(DuplicateFileException e) {
+    public Map<String, Object> handleDuplicate(final DuplicateFileException e) {
         return buildError(HttpStatus.CONFLICT, "Arquivo duplicado", e.getMessage());
     }
 
     @ExceptionHandler(EmptyFileException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, Object> handleEmptyFile(EmptyFileException e) {
+    public Map<String, Object> handleEmptyFile(final EmptyFileException e) {
         return buildError(HttpStatus.BAD_REQUEST, "Arquivo inválido", e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, Object> handleUnexpected(Exception e) {
+    public Map<String, Object> handleUnexpected(final Exception e) {
         return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Erro interno", "Ocorreu um erro inesperado");
     }
 
-    private Map<String, Object> buildError(HttpStatus status, String title, String detail) {
+    private Map<String, Object> buildError(final HttpStatus status,
+                                           final String title, final String detail) {
         Map<String, Object> error = new LinkedHashMap<>();
-        error.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        error.put("timestamp", LocalDateTime.now()
+                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         error.put("status", status.value());
         error.put("title", title);
         error.put("detail", detail);

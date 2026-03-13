@@ -28,7 +28,8 @@ public class ProcessSpreadsheetUseCase implements ProcessSpreadsheetInputPort {
     private final SpreadsheetExtractorPort extractor;
     private final TransactionEventPublisherPort publisher;
 
-    public ProcessSpreadsheetUseCase(TransactionRepositoryPort repository, SpreadsheetExtractorPort extractor, TransactionEventPublisherPort publisher) {
+    public ProcessSpreadsheetUseCase(TransactionRepositoryPort repository,
+                                     SpreadsheetExtractorPort extractor, TransactionEventPublisherPort publisher) {
         this.repository = repository;
         this.extractor = extractor;
         this.publisher = publisher;

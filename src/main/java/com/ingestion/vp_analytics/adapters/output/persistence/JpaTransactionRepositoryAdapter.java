@@ -36,7 +36,8 @@ public class JpaTransactionRepositoryAdapter implements TransactionRepositoryPor
 
     @Override
     public SpreadsheetUpload updateUploadStatus(String uploadId, UploadStatus status) {
-        SpreadsheetUploadEntity entity = uploadRepository.findById(uploadId).orElseThrow(() -> new EntityNotFoundException("Upload not found " + uploadId));
+        SpreadsheetUploadEntity entity = uploadRepository.findById(uploadId).orElseThrow(
+                () -> new EntityNotFoundException("Upload not found " + uploadId));
         entity.setStatus(status);
         entity.setUpdatedAt(LocalDateTime.now());
         uploadRepository.save(entity);
