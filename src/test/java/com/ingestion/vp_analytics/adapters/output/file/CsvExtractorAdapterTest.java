@@ -14,11 +14,16 @@ import org.mockito.Mockito;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 class CsvExtractorAdapterTest {
@@ -38,8 +43,9 @@ class CsvExtractorAdapterTest {
         List<Transaction> result = csvExtractor.extract(csv(fileName), fileName);
         Transaction firstRow = result.getFirst();
         Transaction secondRow = result.get(1);
+        Transaction thirdRow = result.get(2);
 
-        assertEquals(2, result.size());
+        assertEquals(3, result.size());
 
         assertEquals(LocalDate.of(2025, 1, 15), firstRow.date());
         assertEquals(ETransactionType.REVENUE, firstRow.transactionType());
@@ -60,6 +66,16 @@ class CsvExtractorAdapterTest {
         assertFalse(secondRow.isNewCustomer());
         assertNull(secondRow.firstPurchaseDate());
         assertEquals(new BigDecimal("1200.50"), secondRow.value());
+
+        assertEquals(LocalDate.of(2025, 1, 30), thirdRow.date());
+        assertEquals(ETransactionType.NOT_CATEGORIZED, thirdRow.transactionType());
+        assertEquals(EExpenseCategories.SALES_TEAM, thirdRow.expenseCategory());
+        assertEquals(ERevenueCategories.NOT_CATEGORIZED, thirdRow.revenueCategory());
+        assertEquals("Operacional Vendas", thirdRow.description());
+        assertEquals("", thirdRow.customerId());
+        assertFalse(thirdRow.isNewCustomer());
+        assertNull(thirdRow.firstPurchaseDate());
+        assertEquals(new BigDecimal("6500.00"), thirdRow.value());
     }
 
     @Test
@@ -99,6 +115,25 @@ class CsvExtractorAdapterTest {
         } catch (ProcessSpreadSheetException e) {
             assertEquals("Failed to parse CSV: Text '15/0415/2025' could not be parsed at index 5", e.getMessage());
         }
+    }
+
+    @Test
+    void shouldParseTsvFile() {
+        String tsvFile = "tsv-file-sample.tsv";
+        List<Transaction> resultTsvFile = csvExtractor.extract(csv(tsvFile), tsvFile);
+        assertEquals(3, resultTsvFile.size());
+    }
+
+    @Test
+    void shouldReturnFalseWhenRowHasNonNullCell() throws Exception {
+        Method isBlankRow = CsvExtractorAdapter.class
+                .getDeclaredMethod("isBlankRow", String[].class);
+        isBlankRow.setAccessible(true);
+
+        String[] rowWithValue = {null, "value", null};
+        boolean result = (boolean) isBlankRow.invoke(csvExtractor, (Object) rowWithValue);
+
+        assertFalse(result);
     }
 
     private InputStream csv(String name) {

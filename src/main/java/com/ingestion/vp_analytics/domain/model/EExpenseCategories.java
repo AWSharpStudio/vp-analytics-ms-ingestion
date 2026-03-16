@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum EExpenseCategories {
     PAID_TRAFFIC("Trafego Pago"),
-    SALES_TEAM("Equipe de vendas"),
+    SALES_TEAM("Equipe de Vendas"),
     MARKETING_TEAM("Equipe de Marketing"),
     PRO_LABORE("Pró-labore"),
     TAXES("Impostos"),

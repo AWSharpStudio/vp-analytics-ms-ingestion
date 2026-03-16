@@ -34,8 +34,8 @@ public class CsvExtractorAdapter implements SpreadsheetExtractorPort {
                     .build();
 
             return reader.readAll().stream()
-                    .filter(row -> row.length >= 8)
                     .filter(row -> !isBlankRow(row))
+                    .filter(row -> row.length >= 8)
                     .map(mapper::map)
                     .toList();
         } catch (Exception e) {
@@ -44,7 +44,6 @@ public class CsvExtractorAdapter implements SpreadsheetExtractorPort {
     }
 
     private char resolveSeparator(String fileName) {
-        if (fileName == null) return ',';
         String lower = fileName.toLowerCase();
         if (lower.endsWith(".tsv")) return '\t';
         if (lower.endsWith(".csv")) return ',';
