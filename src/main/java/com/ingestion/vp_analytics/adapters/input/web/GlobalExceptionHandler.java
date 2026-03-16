@@ -2,6 +2,7 @@ package com.ingestion.vp_analytics.adapters.input.web;
 
 import com.ingestion.vp_analytics.domain.exception.DuplicateFileException;
 import com.ingestion.vp_analytics.domain.exception.EmptyFileException;
+import com.ingestion.vp_analytics.domain.exception.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -25,6 +26,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, Object> handleEmptyFile(final EmptyFileException e) {
         return buildError(HttpStatus.BAD_REQUEST, "Arquivo inválido", e.getMessage());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, Object> handleEntityNotFound(final EntityNotFoundException e) {
+        return buildError(HttpStatus.NOT_FOUND, "Não encontrado", e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

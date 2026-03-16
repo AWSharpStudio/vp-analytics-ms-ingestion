@@ -1,0 +1,5 @@
+date	transactionType	expenseCategory	revenueCategory	description	customerId	isNewCustomer	firstPurchaseDate	value
+15/01/2025	Receita		Indicação	Google Ads campaign	CLI-001	TRUE	15/01/2025	4500.00
+20/01/2025	Despesa	Impostos		Simples Nacional				1200.50
+
+30/01/2025	DESPESA	Equipe de Vendas		Operacional Vendas				6500.00

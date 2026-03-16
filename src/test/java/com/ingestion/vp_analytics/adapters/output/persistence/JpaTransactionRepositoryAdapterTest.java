@@ -1,6 +1,12 @@
 package com.ingestion.vp_analytics.adapters.output.persistence;
 
-import com.ingestion.vp_analytics.domain.model.*;
+import com.ingestion.vp_analytics.domain.exception.EntityNotFoundException;
+import com.ingestion.vp_analytics.domain.model.EExpenseCategories;
+import com.ingestion.vp_analytics.domain.model.ERevenueCategories;
+import com.ingestion.vp_analytics.domain.model.ETransactionType;
+import com.ingestion.vp_analytics.domain.model.SpreadsheetUpload;
+import com.ingestion.vp_analytics.domain.model.Transaction;
+import com.ingestion.vp_analytics.domain.model.UploadStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -17,7 +23,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @Testcontainers
@@ -69,6 +78,16 @@ class JpaTransactionRepositoryAdapterTest {
         );
         repositoryAdapter.saveTransactions(transactions, upload.id());
         assertTrue(repositoryAdapter.existsByFileHash(upload.fileHash()));
+    }
+
+    @Test
+    void shouldThrowEntityNotFoundExceptionWhenUpdatingUploadStatus() {
+        String nonExistentId = UUID.randomUUID().toString();
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
+                () -> repositoryAdapter.updateUploadStatus(nonExistentId, UploadStatus.PROCESSING));
+
+        assertEquals("Upload not found " + nonExistentId, exception.getMessage());
     }
 
     private SpreadsheetUpload buildUpload() {

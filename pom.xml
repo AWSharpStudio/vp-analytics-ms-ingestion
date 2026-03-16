@@ -180,6 +180,9 @@
 									</limits>
 								</rule>
 							</rules>
+							<excludes>
+								<exclude>**/VpAnalyticsApplication.class</exclude>
+							</excludes>
 						</configuration>
 					</execution>
 				</executions>

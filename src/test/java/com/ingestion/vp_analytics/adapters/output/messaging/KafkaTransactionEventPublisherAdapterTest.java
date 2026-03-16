@@ -18,6 +18,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
@@ -31,9 +33,15 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @EmbeddedKafka(partitions = 1, topics = "vpa.transactions.ingested")
@@ -59,6 +67,8 @@ class KafkaTransactionEventPublisherAdapterTest {
 
     private KafkaConsumer<String, String> consumer;
 
+    public static final String TOPIC = "vpa.transactions.ingested";
+
     public static final List<Transaction> TRANSACTIONS = List.of(
             new Transaction(LocalDate.of(2025, 1, 15), ETransactionType.REVENUE,
                     null, ERevenueCategories.REFERRAL, "Google Ads", "CLI-001",
@@ -71,7 +81,7 @@ class KafkaTransactionEventPublisherAdapterTest {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         consumer = new KafkaConsumer<>(props);
-        consumer.subscribe(Collections.singletonList("vpa.transactions.ingested"));
+        consumer.subscribe(Collections.singletonList(TOPIC));
     }
 
     @AfterEach
@@ -89,5 +99,17 @@ class KafkaTransactionEventPublisherAdapterTest {
         assertEquals("upload-test-1", cRecord.key());
         assertTrue(cRecord.value().contains("upload-test-1"));
         assertTrue(cRecord.value().contains("transactionCount"));
+    }
+
+    @Test
+    void shouldLogErrorWhenKafkaFails() {
+        KafkaTemplate<String, TransactionsIngestedEvent> failingTemplate = mock(KafkaTemplate.class);
+        CompletableFuture<SendResult<String, TransactionsIngestedEvent>> failedFuture = new CompletableFuture<>();
+        failedFuture.completeExceptionally(new RuntimeException("Kafka is down"));
+
+        when(failingTemplate.send(anyString(), anyString(), any())).thenReturn(failedFuture);
+
+        KafkaTransactionEventPublisherAdapter failingPublisher = new KafkaTransactionEventPublisherAdapter(failingTemplate, TOPIC);
+        assertDoesNotThrow(() -> failingPublisher.publish("upload-fail", TRANSACTIONS));
     }
 }

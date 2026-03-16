@@ -2,6 +2,7 @@ package com.ingestion.vp_analytics.adapters.input;
 
 import com.ingestion.vp_analytics.adapters.input.web.IngestionController;
 import com.ingestion.vp_analytics.domain.exception.DuplicateFileException;
+import com.ingestion.vp_analytics.domain.exception.EntityNotFoundException;
 import com.ingestion.vp_analytics.domain.ports.input.ProcessSpreadsheetInputPort;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,18 +26,18 @@ class IngestionControllerTest {
     private ProcessSpreadsheetInputPort useCase;
 
     @Test
-    void shouldReturn202OnSuccess() throws Exception {
+    void shouldReturn202Success() throws Exception {
         doNothing().when(useCase).execute(any());
-        var file = new MockMultipartFile("file", "jan.csv", "text/csv", "data".getBytes());
+        MockMultipartFile file = new MockMultipartFile("file", "jan.csv", "text/csv", "data".getBytes());
 
         mockMvc.perform(multipart("/api/v1/ingestion/spreadsheet").file(file))
                 .andExpect(status().isAccepted());
     }
 
     @Test
-    void shouldReturn409OnDuplicate() throws Exception {
+    void shouldReturn409Duplicate() throws Exception {
         doThrow(new DuplicateFileException("abc123")).when(useCase).execute(any());
-        var file = new MockMultipartFile("file", "jan.csv", "text/csv", "data".getBytes());
+        MockMultipartFile file = new MockMultipartFile("file", "jan.csv", "text/csv", "data".getBytes());
 
         mockMvc.perform(multipart("/api/v1/ingestion/spreadsheet").file(file))
                 .andExpect(status().isConflict());
@@ -44,7 +45,7 @@ class IngestionControllerTest {
 
     @Test
     void shouldReturn400WhenFileIsEmpty() throws Exception {
-        var empty = new MockMultipartFile("file", "empty.csv", "text/csv", new byte[0]);
+        MockMultipartFile empty = new MockMultipartFile("file", "empty.csv", "text/csv", new byte[0]);
 
         mockMvc.perform(multipart("/api/v1/ingestion/spreadsheet").file(empty))
                 .andExpect(status().isBadRequest());
@@ -53,11 +54,21 @@ class IngestionControllerTest {
     }
 
     @Test
-    void shouldReturn500OnUnexpectedFailure() throws Exception {
+    void shouldThrowEntityNotFoundException() throws Exception {
+        doThrow(new EntityNotFoundException("Upload not found")).when(useCase).execute(any());
+        MockMultipartFile file = new MockMultipartFile("file", "jan.csv", "text/csv", "data".getBytes());
+
+        mockMvc.perform(multipart("/api/v1/ingestion/spreadsheet").file(file))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturn500UnexpectedFailure() throws Exception {
         doThrow(new RuntimeException("DB down")).when(useCase).execute(any());
-        var file = new MockMultipartFile("file", "jan.csv", "text/csv", "data".getBytes());
+        MockMultipartFile file = new MockMultipartFile("file", "jan.csv", "text/csv", "data".getBytes());
 
         mockMvc.perform(multipart("/api/v1/ingestion/spreadsheet").file(file))
                 .andExpect(status().isInternalServerError());
     }
+
 }
